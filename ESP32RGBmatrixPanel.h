@@ -53,7 +53,7 @@ public:
 	uint8 b;
 };
 
-#define COLUMNS 64
+#define COLUMNS 128
 #define ROWS 32
 #define layers 256
 #define colorDepthPerChannel 4  //(2^colorDepthPerChannel)^3  Colors. 4096@4 bit.  262144 @ 6 bit. 
@@ -106,7 +106,7 @@ public:
 
 	/* reset all Pixels to black */
 	void black();
-	/*  call every 1-3µs! */
+	/*  call every 1-3Âµs! */
 	void update();
 	/*  from 0 = off to 10 = max */
 	void setBrightness(byte brightness);
