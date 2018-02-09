@@ -1,5 +1,5 @@
 #include "ESP32RGBmatrixPanel.h"
-#include "./../../hardware/espressif/esp32/cores/esp32/esp32-hal-gpio.h"
+#include <esp32-hal-gpio.h>
 //G1	R1 |
 //GND	B1 |
 //G2	R2 |
@@ -92,7 +92,7 @@ void ESP32RGBmatrixPanel::black()
 #define loops 10
 void ESP32RGBmatrixPanel::update()
 {
-	if (loopNr == 0) drawRow();			//Display OFF-time (25 µs). 
+	if (loopNr == 0) drawRow();			//Display OFF-time (25 Âµs). 
 	if (loopNr == loopNrOn) on();				//Turn Display ON
 	loopNr = loopNr + 1;
 	if (loopNr >= loops)
