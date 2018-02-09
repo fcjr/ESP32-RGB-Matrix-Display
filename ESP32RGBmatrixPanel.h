@@ -2,9 +2,9 @@
 Author:	Vitali Gottselig
 https://github.com/
 */
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "Adafruit_GFX.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <Adafruit_GFX.h>
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef short	int16_t;
