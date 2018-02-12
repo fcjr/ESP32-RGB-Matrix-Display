@@ -1,5 +1,5 @@
-#ifndef ESP32-RGB-MATRIX-DISPLAY-H
-#define ESP32-RGB-MATRIX-DISPLAY-H
+#ifndef ESP32RGB-MATRIX-PANEL-H
+#define ESP32RGB-MATRIX-PANEL-H
 
 /*
 Author:	Vitali Gottselig
