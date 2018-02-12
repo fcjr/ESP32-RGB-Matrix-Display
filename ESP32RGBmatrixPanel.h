@@ -1,3 +1,6 @@
+#ifndef ESP32-RGB-MATRIX-DISPLAY-H
+#define ESP32-RGB-MATRIX-DISPLAY-H
+
 /*
 Author:	Vitali Gottselig
 https://github.com/
@@ -149,3 +152,4 @@ private:
 	uint8 yS;
 };
 
+#endif
