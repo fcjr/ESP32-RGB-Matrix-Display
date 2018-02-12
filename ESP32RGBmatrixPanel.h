@@ -1,5 +1,5 @@
-#ifndef ESP32RGB-MATRIX-PANEL-H
-#define ESP32RGB-MATRIX-PANEL-H
+#ifndef ESP32RGB_MATRIX_PANEL_H
+#define ESP32RGG_MATRIX_PANEL_H
 
 /*
 Author:	Vitali Gottselig
@@ -59,7 +59,7 @@ public:
 #define COLUMNS 128
 #define ROWS 32
 #define layers 256
-#define colorDepthPerChannel 4  //(2^colorDepthPerChannel)^3  Colors. 4096@4 bit.  262144 @ 6 bit. 
+#define colorDepthPerChannel 4  //(2^colorDepthPerChannel)^3  Colors. 4096@4 bit.  262144 @ 6 bit.
 
 //0b0000RRRRGGGGBBBB
 #define rmask 0b0000000000001111
@@ -81,12 +81,12 @@ public:
 
 
 
-class ESP32RGBmatrixPanel : public Adafruit_GFX 
+class ESP32RGBmatrixPanel : public Adafruit_GFX
 {
 public:
 	/*variable pin setup*/
 	ESP32RGBmatrixPanel(uint8 oe, uint8 clk, uint8 lat, uint8 r1, uint8 g1, uint8 b1, uint8 r2, uint8 g2, uint8 b2, uint8 a, uint8 b, uint8 c, uint8 d);
-	
+
 	/*
 	uint8 OE = 23;
 	uint8 CLK = 22;
@@ -105,7 +105,7 @@ public:
 	ESP32RGBmatrixPanel();
 	void drawPixel(int16_t x, int16_t y, uint16_t c);
 	void drawPixel(int16_t x, int16_t y, uint8 r, uint8 g, uint8 b);
-	
+
 
 	/* reset all Pixels to black */
 	void black();
