@@ -38,7 +38,7 @@ ESP32RGBmatrixPanel::ESP32RGBmatrixPanel() : Adafruit_GFX(COLUMNS, ROWS)
 }
 
 
-void IRAM_ATTR ESP32RGBmatrixPanel::initGPIO()
+void ESP32RGBmatrixPanel::initGPIO()
 {
 	pinMode(R1, OUTPUT);
 	pinMode(G1, OUTPUT);
@@ -55,6 +55,9 @@ void IRAM_ATTR ESP32RGBmatrixPanel::initGPIO()
 	pinMode(LAT, OUTPUT);
 	pinMode(CLK, OUTPUT);
 	pinMode(OE, OUTPUT);
+
+	m_unCLK = (uint32_t)1 << CLK;
+
 }
 
 
@@ -92,13 +95,15 @@ void ESP32RGBmatrixPanel::black()
 #define loops 10
 void IRAM_ATTR ESP32RGBmatrixPanel::update()
 {
-	if (loopNr == 0) drawRow();			//Display OFF-time (25 µs).
-	if (loopNr == loopNrOn) on();				//Turn Display ON
-	loopNr = loopNr + 1;
-	if (loopNr >= loops)
-	{
-		loopNr = 0;
-	}
+	if (loopNr == 0)
+      drawGPIOData();
+
+  if (loopNr == loopNrOn)
+     on();        //Turn Display ON
+
+  loopNr = loopNr + 1;
+  if (loopNr >= loops)
+    loopNr = 0;
 }
 
 void ESP32RGBmatrixPanel::setBrightness(byte brightness)
@@ -252,4 +257,137 @@ void ESP32RGBmatrixPanel::drawBitmap(String* bytes)
 			y--;
 		}
 	}
+}
+
+void ESP32RGBmatrixPanel::SaveRowGPIOData()
+{
+  gpio = GPIO.out;
+  gpio = 0;
+
+  // OE (output enable)
+  SetPinFast(OE, HIGH);
+
+  GPIO.out = gpio;
+
+  SetPinFast(CH_A, row & 1 << 0);
+  SetPinFast(CH_B, row & 1 << 1);
+  SetPinFast(CH_C, row & 1 << 2);
+  SetPinFast(CH_D, row & 1 << 3);
+  // SetPinFast(CH_E, row & 1 << 4);
+
+  // 0 ~ 255
+  int nDrawCol = 0;
+  for (column = 0; column < COLUMNS; column++)
+  {
+     if (COLUMNS > 128)
+      {
+        if (column < 127)
+        {
+          // 0 ~ 126
+           nDrawCol = column + 127;
+
+           if (nDrawCol == 127)
+              nDrawCol = 128;
+        }
+        else
+        {
+          // 下半部
+          nDrawCol = column - 127;
+
+            if (nDrawCol - 2 > 0)
+              nDrawCol = nDrawCol - 2;
+        }
+      }
+      else
+      {
+          nDrawCol = column;
+      }
+
+      SetColorPin(R1, pixels[row][nDrawCol].r);
+      SetColorPin(G1, pixels[row][nDrawCol].g);
+      SetColorPin(BL1, pixels[row][nDrawCol].b);
+      SetColorPin(R2, pixels[row + ROWS/2][nDrawCol].r);
+      SetColorPin(G2, pixels[row + ROWS/2][nDrawCol].g);
+      SetColorPin(BL2, pixels[row + ROWS/2][nDrawCol].b);
+
+      m_aryGPIO[row][column].gpio = gpio;
+  }
+
+  row++;
+  if (row >= ROWS/2)
+  {
+    row = 0;
+    layer += layerStep;
+  }
+
+  if (layer + 1 >= layers)
+    layer = layerStep - 1;
+}
+
+void ESP32RGBmatrixPanel::drawGPIOData()
+{
+  gpio = GPIO.out;
+
+  //gpio = 0;
+  SetPinFast(OE, HIGH);
+  GPIO.out = gpio;
+
+  SetPinFast(CH_A, row & 1 << 0);
+  SetPinFast(CH_B, row & 1 << 1);
+  SetPinFast(CH_C, row & 1 << 2);
+  SetPinFast(CH_D, row & 1 << 3);
+  // SetPinFast(CH_E, row & 1 << 4);
+
+  GPIO.out = gpio;
+
+  // 0 ~ 255
+  int nDrawCol = 0;
+  for (column = 0; column < COLUMNS; column++)
+  {
+    gpio = m_aryGPIO[row][column].gpio;
+
+    GPIO.out = gpio;
+    GPIO.out_w1ts = m_unCLK;//SetPinFast is to fast!? wtf!?
+
+    //GPIO.out_w1tc = m_unCLK;
+  }
+
+//  SetPinFast(LAT, HIGH);
+//  GPIO.out = gpio;
+//  SetPinFast(LAT, LOW);
+//  GPIO.out = gpio;
+
+  row++;
+  if (row >= ROWS/2)
+  {
+    row = 0;
+    layer += layerStep;
+  }
+
+  if (layer + 1 >= layers)
+    layer = layerStep - 1;
+}
+
+void ESP32RGBmatrixPanel::allocpixelbuffer(int sizeY, int sizeX)
+{
+  pixels = new color*[sizeY];
+  for(int i = 0; i < sizeY; ++i) {
+      pixels[i] = new color[sizeX];
+  }
+}
+
+void ESP32RGBmatrixPanel::clearpixelbuffer(int sizeY, int sizeX)
+{
+  for(int i = 0; i < sizeY; ++i)
+    delete [] pixels[i];
+
+  delete [] pixels;
+}
+
+void ESP32RGBmatrixPanel::allocGPIOBuffer(int sizeY, int sizeX)
+{
+  m_aryGPIO = new MyGPIO*[sizeY];
+
+  for(int i = 0; i < sizeY; ++i)
+      m_aryGPIO[i] = new MyGPIO[sizeX];
 }

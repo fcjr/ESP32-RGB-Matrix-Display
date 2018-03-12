@@ -118,12 +118,18 @@ public:
 
 	void drawBitmap(String* bytes);
 
+	void SaveRowGPIOData();
+	void allocpixelbuffer(int sizeY, int sizeX);
+	void clearpixelbuffer(int sizeY, int sizeX);
+	void allocGPIOBuffer(int sizeY, int sizeX);
+
 private:
 	volatile byte loopNr = 0;
 	volatile byte loopNrOn = 0;
-	void IRAM_ATTR initGPIO();
+	void initGPIO();
 	void IRAM_ATTR drawRow();
 	void IRAM_ATTR on();
+	void IRAM_ATTR drawGPIOData();
 	uint8 OE = 23;
 	uint8 CLK = 22;
 	uint8 LAT = 03;
