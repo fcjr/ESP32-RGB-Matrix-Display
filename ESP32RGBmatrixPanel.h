@@ -153,7 +153,7 @@ private:
 	uint8 G2 = 2;
 	uint8 BL2 = 15;
 
-	color pixels[ROWS][COLUMNS];
+	color **pixels;
 
 	uint32_t gpio;
 
