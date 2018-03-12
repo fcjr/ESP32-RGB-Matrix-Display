@@ -324,7 +324,7 @@ void ESP32RGBmatrixPanel::SaveRowGPIOData()
     layer = layerStep - 1;
 }
 
-void ESP32RGBmatrixPanel::drawGPIOData()
+void IRAM_ATTR ESP32RGBmatrixPanel::drawGPIOData()
 {
   gpio = GPIO.out;
 

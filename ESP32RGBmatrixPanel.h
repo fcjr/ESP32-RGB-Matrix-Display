@@ -56,6 +56,12 @@ public:
 	uint8 b;
 };
 
+struct MyGPIO
+{
+public:
+  uint32_t gpio;
+};
+
 #define COLUMNS 128
 #define ROWS 32
 #define layers 256
@@ -156,6 +162,9 @@ private:
 	uint8 row = 0;
 	uint8 column = 0;
 	uint8 yS;
+
+	uint32_t m_unCLK;
+	MyGPIO **m_aryGPIO;
 };
 
 #endif
